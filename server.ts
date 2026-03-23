@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { Pool } from 'pg';
-import * as Minio from 'minio';
+import pg from 'pg';
+const { Pool } = pg;
+import { Client as MinioClient } from 'minio';
 import crypto from 'crypto';
 import path from 'path';
 
@@ -16,7 +17,7 @@ app.use(cors());
 const dbUrl = process.env.DATABASE_URL;
 
 let isDbConnected = false;
-const memoryCache: Record<string, any> = {};
+const memoryCache = {};
 
 if (!dbUrl) {
   console.warn('WARNING: DATABASE_URL environment variable is not set!');
@@ -27,7 +28,7 @@ if (!dbUrl) {
   console.log(`Attempting to connect to database: ${maskedUrl}`);
 }
 
-let pool: Pool | null = null;
+let pool: pg.Pool | null = null;
 if (dbUrl) {
   pool = new Pool({
     connectionString: dbUrl,
@@ -81,7 +82,7 @@ initDB();
 let rawEndpoint = process.env.MINIO_ENDPOINT || 'localhost';
 const cleanEndpoint = rawEndpoint.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
-const minioClient = new Minio.Client({
+const minioClient = new MinioClient({
   endPoint: cleanEndpoint,
   port: parseInt(process.env.MINIO_PORT || '9000'),
   useSSL: process.env.MINIO_USE_SSL === 'true',
@@ -90,17 +91,17 @@ const minioClient = new Minio.Client({
 });
 
 // External MinIO client for generating presigned URLs that the browser can reach
-const externalEndpoint = process.env.MINIO_EXTERNAL_URL || '';
+const publicUrl = process.env.MINIO_PUBLIC_URL || '';
 let externalMinioClient = minioClient;
 
-if (externalEndpoint) {
-  const cleanExternal = externalEndpoint.replace(/^https?:\/\//, '').replace(/\/$/, '');
-  const isSSL = externalEndpoint.startsWith('https://');
+if (publicUrl && !publicUrl.startsWith('/')) {
+  const cleanExternal = publicUrl.replace(/^https?:\/\//, '').replace(/\/$/, '').split('/')[0];
+  const isSSL = publicUrl.startsWith('https://');
   
-  externalMinioClient = new Minio.Client({
+  externalMinioClient = new MinioClient({
     endPoint: cleanExternal,
     // If port is not in the URL, use default 80/443 or 9000
-    port: externalEndpoint.includes(':') ? parseInt(externalEndpoint.split(':').pop()!) : (isSSL ? 443 : 80),
+    port: publicUrl.includes(':') ? parseInt(publicUrl.split(':').pop()!.split('/')[0]) : (isSSL ? 443 : 80),
     useSSL: isSSL,
     accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
     secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
@@ -118,6 +119,20 @@ async function initMinio() {
     } else {
       console.log(`Bucket ${bucketName} exists`);
     }
+
+    // Set public policy so images can be accessed directly via MINIO_PUBLIC_URL if needed
+    const policy = {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Action: ['s3:GetObject'],
+          Effect: 'Allow',
+          Principal: { AWS: ['*'] },
+          Resource: [`arn:aws:s3:::${bucketName}/*`],
+        },
+      ],
+    };
+    await minioClient.setBucketPolicy(bucketName, JSON.stringify(policy));
   } catch (err) {
     console.error('Failed to initialize MinIO:', err);
   }
@@ -157,8 +172,13 @@ async function processDataUrls(data: any): Promise<any> {
                 'Content-Type': mimeType
               });
               
-              // Replace dataUrl with the API endpoint to fetch the file
-              data[key] = `/api/files/${filename}`;
+              // Replace dataUrl with the public URL if available, otherwise use the API endpoint
+              const publicUrl = process.env.MINIO_PUBLIC_URL || '';
+              if (publicUrl) {
+                data[key] = `${publicUrl.replace(/\/$/, '')}/${bucketName}/${filename}`;
+              } else {
+                data[key] = `/api/files/${filename}`;
+              }
               console.log(`Replaced dataUrl with: ${data[key]}`);
             }
           }
@@ -231,11 +251,14 @@ app.post('/api/docs/sync', (req, res) => saveToDB(req, res, 'wikiTegralDocs'));
 app.get('/api/buildings', (req, res) => getFromDB(req, res, 'wikiTegralEdificios', []));
 app.post('/api/buildings/sync', (req, res) => saveToDB(req, res, 'wikiTegralEdificios'));
 
-app.get('/api/security', (req, res) => getFromDB(req, res, 'wikiTegralSecurity', { pin: '', techPin: '', dni: '', dni2: '' }));
+app.get('/api/security', (req, res) => getFromDB(req, res, 'wikiTegralSecurity', { pinEnabled: false, pin: '', dni: '' }));
 app.post('/api/security', (req, res) => saveToDB(req, res, 'wikiTegralSecurity'));
 
 app.get('/api/equipos', (req, res) => getFromDB(req, res, 'wikiTegralEquipos', []));
 app.post('/api/equipos/sync', (req, res) => saveToDB(req, res, 'wikiTegralEquipos'));
+
+app.get('/api/racks', (req, res) => getFromDB(req, res, 'wikiTegralRacks', []));
+app.post('/api/racks/sync', (req, res) => saveToDB(req, res, 'wikiTegralRacks'));
 
 // File serving endpoint optimized with Presigned URLs
 app.get('/api/files/:filename', async (req, res) => {
