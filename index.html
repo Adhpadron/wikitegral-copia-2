@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>WikiTegral</title>
 
     <!-- Librerías para lectura y exportación de archivos sin servidor -->
@@ -645,29 +645,37 @@
         .header-top {
           justify-content: space-between;
           margin-bottom: 10px;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .header-top > div {
+          flex-wrap: wrap;
+          justify-content: flex-end;
         }
         header h1 {
           font-size: 1.4rem;
         }
         .global-tools {
           flex-direction: row;
-          flex-wrap: nowrap;
+          flex-wrap: wrap;
           align-items: center;
           gap: 6px;
-          justify-content: space-between;
+          justify-content: center;
         }
         .global-tools .dropdown-container {
-          flex: 1;
+          flex: 1 1 calc(33% - 6px);
+          min-width: 90px;
         }
         .global-tools .dropdown-container .action-btn {
           width: 100%;
-          padding: 10px 2px !important;
-          font-size: 0.75rem !important;
-          white-space: nowrap;
+          padding: 10px 4px !important;
+          font-size: 0.8rem !important;
+          white-space: normal;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 2px;
+          text-align: center;
+          gap: 4px;
         }
         #global-search-input {
           display: none;
@@ -1022,6 +1030,10 @@
           <div id="role-indicator" style="display: flex; align-items: center; background: #f1f5f9; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #475569; border: 1px solid #e2e8f0;">
             <span id="role-text">Admin</span>
           </div>
+          <!-- Botón Modo PC -->
+          <button id="pc-mode-btn" class="action-btn" style="background-color: #95a5a6; padding: 8px 12px; flex: 0 1 auto; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold;" onclick="togglePCMode()" title="Modo PC">
+            💻 PC
+          </button>
           <!-- Botón de Modo Oscuro -->
           <button class="action-btn" style="background-color: #3498db; padding: 8px; flex: 0 1 auto; width: 40px; display: flex; align-items: center; justify-content: center;" onclick="toggleDarkMode()" title="Modo Oscuro">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
@@ -1105,12 +1117,8 @@
           </div>
         </div>
         
-        <div style="display: flex; align-items: center; position: relative; flex: 1; max-width: 400px; margin-left: 10px;">
-          <input type="text" id="global-search-input" placeholder="Buscar globalmente (Docs, Equipos, Racks...)" onkeyup="if(event.key === &#39;Enter&#39;) executeSearch()" style="width: 100%; padding: 12px 40px 12px 15px; border-radius: 20px; border: 1px solid #bdc3c7; font-size: 1rem; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);"/>
-          <button onclick="executeSearch()" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; color: #7f8c8d;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          </button>
-        </div>
+
+        <input type="hidden" id="global-search-input" value="" />
       </div>
     </header>
 
@@ -1324,53 +1332,43 @@
         <div class="view-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <h2>Diseñar Rack</h2>
           <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" class="action-btn" onclick="openNewRackModal()" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Nuevo Rack
+            
+            <!-- Botón Rack (Dropdown) -->
+            <div class="dropdown-container">
+              <button type="button" class="action-btn" style="background: #34495e; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;" onclick="toggleRackDropdown(event)">
+                Rack ▼
+              </button>
+              <div id="rack-dropdown-menu" class="dropdown-menu hidden-el" style="min-width: 150px; left: 50%; transform: translateX(-50%);">
+                <button type="button" onclick="openNewRackModal(); closeRackDropdown();">Nuevo</button>
+                <button type="button" onclick="toggleRackView('front'); closeRackDropdown();">Frontal</button>
+                <button type="button" onclick="toggleRackView('back'); closeRackDropdown();">Trasera</button>
+                <button type="button" onclick="openSelectRackModal(); closeRackDropdown();">Seleccionar</button>
+                <button type="button" onclick="exportRackPDF(); closeRackDropdown();">Exportar</button>
+              </div>
+            </div>
+
+            <!-- Botón Biblioteca -->
+            <button type="button" class="action-btn" onclick="openBibliotecaModal()" style="background: #8e44ad; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+              Biblioteca
             </button>
+
+            <!-- Botón Eliminar (Papelera) -->
+            <button type="button" class="action-btn danger" onclick="deleteCurrentRack()" id="btn-delete-rack" disabled="" style="padding: 8px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Eliminar Rack">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
+
+            <!-- Botón Home -->
             <button type="button" class="action-btn home" onclick="goHome()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Menú Principal">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </button>
           </div>
         </div>
 
-        <div style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
-          <label for="rack-select">Seleccionar Rack:</label>
-          <select id="rack-select" onchange="loadSelectedRack()" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; flex: 1; max-width: 300px;">
-            <option value="">-- Selecciona un Rack --</option>
-          </select>
-          <button type="button" class="action-btn" onclick="deleteCurrentRack()" style="background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;" id="btn-delete-rack" disabled="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-            Eliminar
-          </button>
-        </div>
-
         <div id="rack-editor-container" style="display: none;">
-          <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
-            <button type="button" id="btn-rack-front" class="action-btn" onclick="toggleRackView(&#39;front&#39;)" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Frente</button>
-            <button type="button" id="btn-rack-back" class="action-btn" onclick="toggleRackView(&#39;back&#39;)" style="background: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Trasera</button>
-            <button type="button" class="action-btn" onclick="exportRackPDF()" style="background: #e67e22; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
-              Exportar PDF
-            </button>
-          </div>
-          
           <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: #7f8c8d;" id="rack-info-display"></div>
 
           <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-            <!-- Catálogo de Equipos -->
-            <div class="rack-catalog" style="width: 250px; background: #ecf0f1; padding: 15px; border-radius: 8px; border: 1px solid #bdc3c7; height: fit-content;">
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px;">
-                <h3 style="margin: 0; color: #2c3e50;">Catálogo</h3>
-                <button onclick="openCatalogManager()" class="action-btn" style="padding: 5px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex;" title="Gestionar Catálogo">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-                </button>
-              </div>
-              <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;" id="rack-catalog-items">
-                <!-- Items will be generated here -->
-              </div>
-            </div>
-
             <div class="rack-container" style="flex: 1; max-width: 600px; margin-top: 0;">
               <div id="rack-frame" class="rack-frame">
                 <!-- U's will be generated here -->
@@ -1652,6 +1650,46 @@
             </thead>
             <tbody id="equipos-table-body"></tbody>
           </table>
+        </div>
+      </div>
+
+      <div id="select-rack-modal" class="modal-overlay hidden">
+        <div class="modal-content small">
+          <div class="modal-header">
+            <h3>Seleccionar Rack</h3>
+            <button type="button" class="action-btn danger" onclick="closeSelectRackModal()" style="padding: 5px;">Cerrar</button>
+          </div>
+          <div class="modal-body" style="padding: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <label for="modal-rack-select">Rack:</label>
+              <select id="modal-rack-select" onchange="handleModalRackSelect()" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+                <option value="">-- Selecciona un Rack --</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="biblioteca-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Biblioteca de Equipos</h3>
+            <div style="display: flex; gap: 10px;">
+              <button onclick="openCatalogManager()" class="action-btn" style="padding: 5px 10px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="Gestionar Catálogo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                Gestionar
+              </button>
+              <button type="button" class="action-btn" onclick="closeBibliotecaModal()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Volver">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="modal-body" style="padding: 20px;">
+            <p style="font-size: 0.9rem; color: #7f8c8d; margin-bottom: 10px;">Haz clic en un equipo para añadirlo a la primera U disponible, o arrástralo al rack si estás en PC.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;" id="rack-catalog-items">
+              <!-- Items will be generated here -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -3328,6 +3366,22 @@
         });
       };
 
+      let isPCMode = false;
+      function togglePCMode() {
+        isPCMode = !isPCMode;
+        const viewportMeta = document.getElementById('viewport-meta');
+        const btn = document.getElementById('pc-mode-btn');
+        if (isPCMode) {
+          viewportMeta.setAttribute('content', 'width=1200');
+          btn.style.backgroundColor = '#27ae60';
+          btn.style.color = 'white';
+        } else {
+          viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+          btn.style.backgroundColor = '#95a5a6';
+          btn.style.color = 'white';
+        }
+      }
+
       function toggleDarkMode() {
         const isDarkMode = document.body.classList.toggle("dark-mode");
         const msg = isDarkMode ? "Activar modo oscuro" : "Desactivar modo oscuro";
@@ -3775,7 +3829,7 @@
               category: 'Rack',
               name: rack.name,
               details: `U's: ${rack.uCount} | Profundidad: ${rack.depth}`,
-              action: `<button onclick="openRackDesign(); document.getElementById('rack-select').value = ${rackIdx}; loadSelectedRack();" class="action-btn" style="padding: 10px 15px; display: inline-flex; align-items: center; justify-content: center;" title="Ver Rack"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2"/><path d="M7 2v20"/><path d="M17 2v20"/><path d="M2 7h20"/><path d="M2 17h20"/></svg></button>`
+              action: `<button onclick="openRackDesign(); document.getElementById('modal-rack-select').value = ${rackIdx}; loadSelectedRack();" class="action-btn" style="padding: 10px 15px; display: inline-flex; align-items: center; justify-content: center;" title="Ver Rack"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2"/><path d="M7 2v20"/><path d="M17 2v20"/><path d="M2 7h20"/><path d="M2 17h20"/></svg></button>`
             });
           }
           
@@ -3789,7 +3843,7 @@
                   category: `Equipo en Rack (${rack.name} - ${view === 'front' ? 'Frente' : 'Atrás'})`,
                   name: u.content || 'Sin nombre',
                   details: `U: ${uIdx + 1} | S/N: ${u.serial || 'N/A'} | IP: ${u.ip || 'N/A'}`,
-                  action: `<button onclick="openRackDesign(); document.getElementById('rack-select').value = ${rackIdx}; loadSelectedRack(); toggleRackView('${view}');" class="action-btn" style="padding: 10px 15px; display: inline-flex; align-items: center; justify-content: center;" title="Ver en Rack"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>`
+                  action: `<button onclick="openRackDesign(); document.getElementById('modal-rack-select').value = ${rackIdx}; loadSelectedRack(); toggleRackView('${view}');" class="action-btn" style="padding: 10px 15px; display: inline-flex; align-items: center; justify-content: center;" title="Ver en Rack"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>`
                 });
               }
             });
@@ -7068,12 +7122,75 @@
         }
       };
 
+      function toggleRackDropdown(e) {
+        e.stopPropagation();
+        const menu = document.getElementById('rack-dropdown-menu');
+        menu.classList.toggle('hidden-el');
+      }
+
+      function closeRackDropdown() {
+        const menu = document.getElementById('rack-dropdown-menu');
+        if (menu) menu.classList.add('hidden-el');
+      }
+
+      function openSelectRackModal() {
+        document.getElementById('select-rack-modal').classList.remove('hidden');
+      }
+
+      function closeSelectRackModal() {
+        document.getElementById('select-rack-modal').classList.add('hidden');
+      }
+
+      function openBibliotecaModal() {
+        document.getElementById('biblioteca-modal').classList.remove('hidden');
+      }
+
+      function closeBibliotecaModal() {
+        document.getElementById('biblioteca-modal').classList.add('hidden');
+        targetInsertUIndex = null;
+      }
+
+      function openInsertFromLibrary(uIndex) {
+        targetInsertUIndex = uIndex;
+        openBibliotecaModal();
+      }
+
+      function addCatalogItemToFirstAvailableU(item) {
+        if (currentRack === null) {
+          showCustomModal({ message: "Selecciona o crea un rack primero." });
+          return;
+        }
+        const sideData = racks[currentRack][currentRackView];
+        let foundIndex = -1;
+        for (let i = sideData.length - 1; i >= item.u - 1; i--) {
+          let canFit = true;
+          for (let j = 0; j < item.u; j++) {
+            if (sideData[i - j].content !== '' || sideData[i - j].merged !== 1) {
+              canFit = false;
+              break;
+            }
+          }
+          if (canFit) {
+            foundIndex = i;
+            break;
+          }
+        }
+        
+        if (foundIndex !== -1) {
+          applyCatalogItemToU(foundIndex, item);
+          showCustomModal({ message: `${item.name} añadido al rack en la U ${foundIndex + 1}.` });
+        } else {
+          showCustomModal({ message: `No hay suficiente espacio continuo (${item.u}U) en el rack.` });
+        }
+      }
+
       // --- RACK DESIGN LOGIC ---
       let racks = [];
       let currentRack = null;
       let currentRackView = 'front'; // 'front' or 'back'
       let draggedU = null;
       let draggedCatalogItem = null;
+      let targetInsertUIndex = null;
 
       let rackCatalog = [];
       const defaultRackCatalog = [
@@ -7128,6 +7245,16 @@
             <span style="font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">${item.u}U</span>
           `;
           
+          div.addEventListener('click', () => {
+            if (targetInsertUIndex !== null) {
+              applyCatalogItemToU(targetInsertUIndex, item);
+              targetInsertUIndex = null;
+            } else {
+              addCatalogItemToFirstAvailableU(item);
+            }
+            closeBibliotecaModal();
+          });
+
           div.addEventListener('dragstart', handleCatalogDragStart);
           div.addEventListener('dragend', handleCatalogDragEnd);
           
@@ -7279,10 +7406,26 @@
         showView('view-rack-design');
         await loadRackCatalog();
         await loadRacks();
+        if (currentRack === null && racks.length > 0) {
+          currentRack = 0;
+          updateRackSelect();
+          const container = document.getElementById('rack-editor-container');
+          const btnDelete = document.getElementById('btn-delete-rack');
+          if (btnDelete) btnDelete.disabled = false;
+          if (container) container.style.display = 'block';
+          renderRack();
+        } else if (currentRack !== null) {
+          const container = document.getElementById('rack-editor-container');
+          const btnDelete = document.getElementById('btn-delete-rack');
+          if (btnDelete) btnDelete.disabled = false;
+          if (container) container.style.display = 'block';
+          renderRack();
+        }
       }
 
       function updateRackSelect() {
-        const select = document.getElementById('rack-select');
+        const select = document.getElementById('modal-rack-select');
+        if (!select) return;
         select.innerHTML = '<option value="">-- Selecciona un Rack --</option>';
         
         const locations = {};
@@ -7349,22 +7492,28 @@
         loadSelectedRack();
       }
 
+      function handleModalRackSelect() {
+        loadSelectedRack();
+        closeSelectRackModal();
+      }
+
       function loadSelectedRack() {
-        const select = document.getElementById('rack-select');
+        const select = document.getElementById('modal-rack-select');
+        if (!select) return;
         const index = select.value;
         const btnDelete = document.getElementById('btn-delete-rack');
         const container = document.getElementById('rack-editor-container');
 
         if (index === '') {
           currentRack = null;
-          btnDelete.disabled = true;
-          container.style.display = 'none';
+          if (btnDelete) btnDelete.disabled = true;
+          if (container) container.style.display = 'none';
           return;
         }
 
         currentRack = parseInt(index);
-        btnDelete.disabled = false;
-        container.style.display = 'block';
+        if (btnDelete) btnDelete.disabled = false;
+        if (container) container.style.display = 'block';
         currentRackView = 'front';
         renderRack();
       }
@@ -7381,6 +7530,19 @@
       }
 
       function toggleRackView(view) {
+        if (currentRack === null) {
+          if (racks.length > 0) {
+            currentRack = 0;
+            updateRackSelect();
+            const container = document.getElementById('rack-editor-container');
+            const btnDelete = document.getElementById('btn-delete-rack');
+            if (btnDelete) btnDelete.disabled = false;
+            if (container) container.style.display = 'block';
+          } else {
+            openNewRackModal();
+            return;
+          }
+        }
         currentRackView = view;
         renderRack();
       }
@@ -7390,9 +7552,6 @@
         const rack = racks[currentRack];
         const frame = document.getElementById('rack-frame');
         const info = document.getElementById('rack-info-display');
-        
-        document.getElementById('btn-rack-front').style.opacity = currentRackView === 'front' ? '1' : '0.5';
-        document.getElementById('btn-rack-back').style.opacity = currentRackView === 'back' ? '1' : '0.5';
         
         let totalPower = 0;
         let totalBtu = 0;
@@ -7448,10 +7607,12 @@
             <div class="rack-u-content" title="${[uData.serial ? 'S/N: ' + uData.serial : '', uData.ip ? 'IP: ' + uData.ip : ''].filter(Boolean).join(' | ')}">
               <input type="text" class="rack-u-input" value="${uData.content || ''}" placeholder="Vacío" onchange="updateRackU(${i}, this.value)">
               <div class="rack-u-actions">
+                <button class="rack-u-action-btn" onclick="openInsertFromLibrary(${i})" title="Insertar desde Biblioteca"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg></button>
                 <input type="color" class="rack-u-color-picker" value="${uData.color || '#ecf0f1'}" title="Color de fondo" onchange="updateRackUColor(${i}, this.value)" style="width: 20px; height: 20px; padding: 0; border: none; cursor: pointer; background: transparent;">
                 <button class="rack-u-action-btn" onclick="openRackUDetails(${i})" title="Detalles"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
                 <button class="rack-u-action-btn" onclick="openRackConnections(${i})" title="Conexiones"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H3"/><path d="M8 16v1a2 2 0 0 0 2 2h11"/><path d="M16 16l-3 3"/><path d="M8 16l3 3"/><rect x="2" y="4" width="20" height="8" rx="2"/></svg></button>
                 ${nextUIndex >= 0 ? `<button class="rack-u-action-btn" onclick="mergeRackU(${i}, ${nextUIndex})" title="Unir con U inferior"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>` : ''}
+                <button class="rack-u-action-btn" onclick="emptyRackU(${i})" title="Vaciar U"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
                 ${uData.merged > 1 ? `<button class="rack-u-action-btn" onclick="unmergeRackU(${i})" title="Separar U"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21 5-5 5 5"/><path d="m7 3 5 5 5-5"/></svg></button>` : ''}
               </div>
             </div>
@@ -7524,6 +7685,26 @@
         }
       }
 
+      function emptyRackU(index) {
+        if (currentRack === null) return;
+        const sideData = racks[currentRack][currentRackView];
+        
+        if (sideData[index].merged > 1) {
+          unmergeRackU(index, false);
+        }
+        
+        sideData[index].content = '';
+        sideData[index].color = '#ecf0f1';
+        sideData[index].serial = '';
+        sideData[index].ip = '';
+        sideData[index].power = 0;
+        sideData[index].btu = 0;
+        sideData[index].connections = [];
+        
+        saveRacks();
+        renderRack();
+      }
+
       // Drag and Drop Logic
       function handleRackDragStart(e) {
         draggedU = this;
@@ -7572,17 +7753,28 @@
       let touchStartY = 0;
       let touchElement = null;
       let touchClone = null;
+      let isTouchDragging = false;
 
       function handleRackTouchStart(e) {
         if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) {
           return; // Don't drag if interacting with input or button
         }
-        touchElement = this;
         
-        const rect = this.getBoundingClientRect();
+        // Only initiate drag if touching the U number area
+        if (!e.target.closest('.rack-u-number')) {
+          return;
+        }
+
+        touchElement = this;
+        isTouchDragging = true;
+        
+        const touch = e.touches[0];
+        touchStartY = touch.clientY;
+        
+        const rect = touchElement.getBoundingClientRect();
         
         // Create a clone for visual feedback
-        touchClone = this.cloneNode(true);
+        touchClone = touchElement.cloneNode(true);
         touchClone.style.position = 'fixed';
         touchClone.style.top = `${rect.top}px`;
         touchClone.style.left = `${rect.left}px`;
@@ -7593,10 +7785,16 @@
         touchClone.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
         document.body.appendChild(touchClone);
         
-        this.style.opacity = '0.3';
+        touchElement.style.opacity = '0.3';
+        
+        if (navigator.vibrate) navigator.vibrate(50);
       }
 
       function handleRackTouchMove(e) {
+        if (!isTouchDragging) {
+          return; // Let it scroll
+        }
+        
         if (!touchElement || !touchClone) return;
         e.preventDefault(); // Prevent scrolling
         
@@ -7615,22 +7813,29 @@
       }
 
       function handleRackTouchEnd(e) {
+        if (!isTouchDragging) {
+          touchElement = null;
+          return; // Was just a tap or scroll
+        }
+        
         if (!touchElement || !touchClone) return;
+        
+        touchElement.style.opacity = '1';
+        touchClone.remove();
+        touchClone = null;
+        
+        document.querySelectorAll('.rack-u').forEach(el => el.classList.remove('drag-over'));
         
         const touch = e.changedTouches[0];
         const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
         const targetU = targetElement ? targetElement.closest('.rack-u') : null;
-
+        
         if (targetU && targetU !== touchElement) {
           swapRackU(parseInt(touchElement.dataset.index), parseInt(targetU.dataset.index));
         }
-
-        touchClone.remove();
-        touchElement.style.opacity = '1';
-        document.querySelectorAll('.rack-u').forEach(el => el.classList.remove('drag-over'));
         
+        isTouchDragging = false;
         touchElement = null;
-        touchClone = null;
       }
 
       function swapRackU(index1, index2) {
@@ -7751,11 +7956,11 @@
         actionBtns.forEach(btn => btn.style.display = 'none');
         
         const opt = {
-          margin:       10,
+          margin:       2,
           filename:     `Rack_${rack.name}_${currentRackView}.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          image:        { type: 'jpeg', quality: 0.9 },
+          html2canvas:  { scale: 1.2, useCORS: true, letterRendering: true, windowWidth: element.scrollWidth },
+          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
