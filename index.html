@@ -381,6 +381,13 @@
         align-items: flex-end;
       }
 
+      @media (max-width: 768px) {
+        #ai-chat-container {
+          height: 45vh !important;
+          min-height: 300px !important;
+        }
+      }
+
       /* --- TABLAS --- */
       table {
         width: 100%;
@@ -869,7 +876,7 @@
         margin-top: 20px;
       }
       .rack-frame {
-        background-color: #2c3e50;
+        background-color: #333333;
         padding: 10px;
         border-radius: 5px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
@@ -881,8 +888,8 @@
       }
       .rack-u {
         height: 40px;
-        background-color: #ecf0f1;
-        border: 1px solid #bdc3c7;
+        background-color: #444444;
+        border: 1px solid #555555;
         margin-bottom: 2px;
         display: flex;
         align-items: stretch;
@@ -899,14 +906,15 @@
         border: 2px dashed #3498db;
       }
       .rack-u-number {
-        width: 30px;
+        width: 35px;
         font-weight: bold;
-        color: #7f8c8d;
-        font-size: 0.8rem;
+        color: #ffffff;
+        background-color: #2c3e50;
+        font-size: 0.75rem;
         text-align: center;
-        border-right: 1px solid #bdc3c7;
+        border-right: 1px solid #34495e;
         margin-right: 10px;
-        padding-right: 5px;
+        padding: 5px 2px;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
@@ -917,6 +925,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        padding-right: 5px;
       }
       .rack-u-input {
         width: 100%;
@@ -925,17 +934,22 @@
         font-size: 0.9rem;
         outline: none;
         color: #2c3e50;
+        pointer-events: none;
       }
       .rack-u-actions {
         display: flex;
-        gap: 5px;
+        gap: 3px;
+        background-color: #34495e;
+        padding: 4px;
+        border-radius: 4px;
+        align-items: center;
       }
       .rack-u-action-btn {
         background: none;
         border: none;
         cursor: pointer;
         padding: 2px;
-        color: #7f8c8d;
+        color: #ffffff !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -991,8 +1005,8 @@
         border-color: #0d1318;
       }
       body.dark-mode .rack-u {
-        background-color: #34495e;
-        border-color: #2c3e50;
+        background-color: #444444;
+        border-color: #555555;
       }
       body.dark-mode .rack-u-number {
         color: #bdc3c7;
@@ -1019,6 +1033,18 @@
       body.dark-mode .form-group[style*="background: #f8f9fa"] {
         background-color: #34495e !important;
         border-color: #2c3e50 !important;
+      }
+      @media (max-width: 600px) and (orientation: portrait) {
+        #rack-preview-container .rack-preview-modal-content {
+          width: 100% !important;
+          height: 100% !important;
+          max-height: 100vh !important;
+          border-radius: 0 !important;
+          padding: 10px !important;
+        }
+        #rack-preview-content {
+          padding: 5px !important;
+        }
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -1064,6 +1090,7 @@
             Archivo ▼
           </button>
           <div id="file-dropdown-menu" class="dropdown-menu hidden-el">
+            <button onclick="openCreateDocumentModal(); toggleHeaderDropdown(&#39;file-dropdown-menu&#39;, event);" style="display: flex; align-items: center; gap: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Crear</button>
             <button id="btn-header-import" onclick="openGlobalImportModal(); toggleHeaderDropdown(&#39;file-dropdown-menu&#39;, event);" style="display: flex; align-items: center; gap: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Importar Archivo</button>
             <button onclick="showStatistics(); toggleHeaderDropdown(&#39;file-dropdown-menu&#39;, event);" style="display: flex; align-items: center; gap: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Estadísticas</button>
           </div>
@@ -1324,7 +1351,7 @@
             <button id="btn-subir-archivo" class="action-btn" onclick="document.getElementById('file-upload').click()" style="background-color: #3498db; display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; min-width: 120px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Subir Archivo
             </button>
-            <button id="btn-crear-documento" class="action-btn secondary" onclick="abrirEditor()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; min-width: 120px;">
+            <button id="btn-crear-documento" class="action-btn secondary" onclick="openCreateDocumentModal()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; min-width: 120px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Crear
             </button>
             <button type="button" class="action-btn" onclick="goBackFromDocs()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Volver">
@@ -1353,7 +1380,7 @@
       <div id="view-rack-design" class="view">
         <div class="view-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <h2>Diseñar Rack</h2>
-          <div style="display: flex; gap: 8px; align-items: center;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
             
             <!-- Botón Rack (Dropdown) -->
             <div class="dropdown-container">
@@ -1385,6 +1412,13 @@
             <button type="button" class="action-btn" onclick="undoRackMove()" style="background: #e67e22; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="Deshacer">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
             </button>
+            
+            <!-- Botón Vista Previa -->
+            <button type="button" class="action-btn" onclick="openRackPreview()" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;" title="Vista Previa">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Vista Previa
+            </button>
+            
             <button type="button" class="action-btn home" onclick="goHome()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Menú Principal">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </button>
@@ -1598,7 +1632,7 @@
               <th>Edificio</th>
               <th>Horario</th>
               <th>Contacto</th>
-              <th>Acción</th>
+              <th style="text-align: right;">Acción</th>
             </tr>
           </thead>
           <tbody id="edificios-table-body"></tbody>
@@ -1710,7 +1744,7 @@
 
             <div class="form-group" style="margin-top: 20px;">
               <p style="font-size: 0.9rem; color: #7f8c8d; margin-bottom: 10px;">Haz clic en un equipo para añadirlo a la primera U disponible.</p>
-              <div id="rack-catalog-items" style="background: white; border: 1px solid #bdc3c7; border-radius: 4px; padding: 10px; min-height: 150px; display: flex; flex-direction: column; gap: 10px;">
+              <div id="rack-catalog-items" style="background: white; border: 1px solid #bdc3c7; border-radius: 4px; padding: 10px; min-height: 150px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 400px;">
                 <!-- Items will be generated here -->
               </div>
             </div>
@@ -1801,11 +1835,11 @@
 
 
 
-      <!-- MODAL DETALLES U -->
+      <!-- MODAL DATOS EQUIPO -->
       <div id="rack-u-details-modal" class="modal-overlay hidden">
         <div class="modal-content small">
           <div class="modal-header">
-            <h3 style="margin: 0;">Detalles del Equipo</h3>
+            <h3 style="margin: 0;">Datos de Equipo</h3>
             <button type="button" class="close-btn" onclick="closeRackUDetails()">×</button>
           </div>
           <div class="modal-body">
@@ -1821,16 +1855,6 @@
             <div class="form-group">
               <label for="u-details-ip">Dirección IP:</label>
               <input type="text" id="u-details-ip" placeholder="Opcional"/>
-            </div>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-              <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                <label for="u-details-power">Consumo (W):</label>
-                <input type="number" id="u-details-power" min="0" placeholder="Opcional"/>
-              </div>
-              <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                <label for="u-details-btu">Disipación (BTU/h):</label>
-                <input type="number" id="u-details-btu" min="0" placeholder="Opcional"/>
-              </div>
             </div>
           </div>
           <div class="modal-actions">
@@ -1927,7 +1951,6 @@
                 <th>C.I.</th>
                 <th>S/N</th>
                 <th>Comentarios</th>
-                <th>Archivo</th>
                 <th>Plano</th>
                 <th>Acciones</th>
               </tr>
@@ -1980,6 +2003,7 @@
               <img id="ver-wifi-foto" src="" alt="Foto Wifi" style="max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
             </div>
           </div>
+          <div id="ver-wifi-fotos-thumbnails" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;"></div>
           <div id="ver-wifi-plano-container" style="margin-top: 20px; display: none;">
             <strong><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 4px;"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg> Plano:</strong>
             <div style="margin-top: 10px; text-align: center; position: relative; display: inline-block; width: 100%;">
@@ -1998,16 +2022,19 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
               <h3 id="wifi-modal-title" style="margin: 0; font-size: 1.2rem; white-space: nowrap;">Añadir Wifi</h3>
             </div>
-            <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; margin-left: auto; overflow-x: auto; padding-bottom: 2px;">
-              <button class="action-btn" onclick="document.getElementById(&#39;wifi-archivo-upload-solo&#39;).click()" style="height: 32px; padding: 0 8px; min-width: auto; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.8rem; background-color: #3498db; white-space: nowrap; flex-shrink: 0;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> Sólo Foto
-              </button>
+            <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-left: auto; padding-bottom: 2px;">
               <button id="btn-foto-datos" class="action-btn" onclick="document.getElementById(&#39;wifi-archivo-upload-ocr&#39;).click()" style="height: 32px; padding: 0 8px; min-width: auto; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.8rem; background-color: #3498db; white-space: nowrap; flex-shrink: 0;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> Foto y Datos
               </button>
-              <button class="action-btn" onclick="abrirEditorPlanoWifi()" style="height: 32px; padding: 0 8px; min-width: auto; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.8rem; background-color: #1e3a8a; white-space: nowrap; flex-shrink: 0;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg> Ubicación
-              </button>
+              <div class="dropdown-container">
+                <button class="action-btn" onclick="toggleHeaderDropdown('wifi-importar-plano-dropdown', event)" style="height: 32px; padding: 0 8px; min-width: auto; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.8rem; background-color: #1e3a8a; white-space: nowrap; flex-shrink: 0;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg> Importar Plano ▼
+                </button>
+                <div id="wifi-importar-plano-dropdown" class="dropdown-menu hidden-el" style="min-width: 150px;">
+                  <button onclick="document.getElementById('wifi-plano-upload').click(); closeAllDropdowns();">Desde Archivo</button>
+                  <button onclick="abrirSelectorPlanosWifi(); closeAllDropdowns();">Seleccionar Plano</button>
+                </div>
+              </div>
               <button class="action-btn" onclick="guardarWifi()" style="height: 32px; padding: 0 8px; min-width: auto; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.8rem; background-color: #2b579a; white-space: nowrap; flex-shrink: 0;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar
               </button>
@@ -2064,7 +2091,7 @@
 
       <!-- MODAL EDITOR DE PLANO WIFI -->
       <div id="modal-wifi-plano" class="modal-overlay hidden" style="z-index: 5500">
-        <div class="modal-content" style="max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="modal-content" style="width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; margin: 0; display: flex; flex-direction: column;">
           <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div style="display: flex; align-items: center;">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
@@ -2086,6 +2113,9 @@
               <button class="action-btn" onclick="limpiarSimbolosWifi()" style="background-color: #e74c3c; height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> Limpiar Símbolos
               </button>
+              <button class="action-btn" onclick="limpiarMapaWifi()" style="background-color: #e74c3c; height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> Quitar Mapa
+              </button>
 
               <!-- Volver y Menú Principal -->
               <button type="button" class="action-btn" onclick="cerrarEditorPlanoWifi()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Volver">
@@ -2096,14 +2126,14 @@
               </button>
             </div>
           </div>
-          <div style="padding: 20px; display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+          <div style="padding: 10px 20px; display: flex; flex-direction: column; flex: 0 0 auto;">
             <input type="file" id="wifi-plano-upload" class="hidden-input" accept="image/*,application/pdf" onchange="cargarImagenPlanoWifi(event)"/>
-            <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-              <label for="wifi-symbol-size" style="font-size: 0.9rem; color: #666;">Tamaño del símbolo:</label>
-              <input type="range" id="wifi-symbol-size" min="10" max="100" value="32" oninput="actualizarTamanoSimbolosWifi()"/>
+            <div style="display: flex; align-items: center; gap: 10px; margin-left: auto; padding: 5px 0;">
+              <label for="wifi-symbol-size" style="font-size: 0.8rem; color: #666;">Tamaño símbolo:</label>
+              <input type="range" id="wifi-symbol-size" min="10" max="100" value="32" oninput="actualizarTamanoSimbolosWifi()" style="width: 80px;"/>
             </div>
-            <span style="font-size: 0.9rem; color: #666; align-self: center; width: 100%; display: flex; align-items: center; gap: 4px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span style="font-size: 0.8rem; color: #666; align-self: center; width: 100%; display: flex; align-items: center; gap: 4px; padding-bottom: 5px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               Haz clic en el plano para colocar los símbolos del Wifi actual.
             </span>
           </div>
@@ -2113,11 +2143,10 @@
               <img id="wifi-plano-img" style="max-width: 100%; cursor: crosshair; display: block;" onclick="colocarSimboloWifi(event)"/>
             </div>
           </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-              <button class="action-btn danger" onclick="cerrarEditorPlanoWifi()">Cerrar</button>
-              <button id="btn-edit-wifi-plano" class="action-btn secondary" onclick="activarEdicionPlanoWifi()">Editar</button>
-              <button id="btn-save-wifi-plano" class="action-btn" onclick="guardarPlanoWifi()">Guardar Datos</button>
-            </div>
+          <div style="padding: 10px 20px; display: flex; gap: 10px; justify-content: flex-end; flex: 0 0 auto;">
+            <button class="action-btn danger" onclick="cerrarEditorPlanoWifi()">Cerrar</button>
+            <button id="btn-edit-wifi-plano" class="action-btn secondary" onclick="activarEdicionPlanoWifi()">Editar</button>
+            <button id="btn-save-wifi-plano" class="action-btn" onclick="guardarPlanoWifi()">Guardar Datos</button>
           </div>
         </div>
       </div>
@@ -2197,15 +2226,21 @@
           <h2 id="edificio-title" style="margin: 0; font-size: 2rem;">Añadir Edificio</h2>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <!-- Botones de Acción -->
-            <button class="action-btn" onclick="document.getElementById(&#39;edi-foto-upload&#39;).click()" style="height: 36px; padding: 0 12px; min-width: 100px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.9rem; background-color: #3498db;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Archivo
+            <button class="action-btn" onclick="document.getElementById('edi-foto-upload').click()" style="height: 36px; padding: 0 12px; min-width: 100px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.9rem; background-color: #3498db;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Foto
             </button>
             <button class="action-btn" onclick="guardarEdificio()" style="height: 36px; padding: 0 12px; min-width: 100px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.9rem; background-color: #2b579a;">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar
             </button>
-            <button class="action-btn" onclick="document.getElementById(&#39;edi-plano-upload&#39;).click()" style="height: 36px; padding: 0 12px; min-width: 100px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.9rem; background-color: #1e3a8a;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg> Importar Plano
+            <div class="dropdown-container">
+              <button class="action-btn" onclick="toggleHeaderDropdown('edi-importar-plano-dropdown', event)" style="height: 36px; padding: 0 12px; min-width: 100px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.9rem; background-color: #1e3a8a;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg> Importar Plano ▼
             </button>
+            <div id="edi-importar-plano-dropdown" class="dropdown-menu hidden-el" style="min-width: 180px; left: 50%; transform: translateX(-50%);">
+              <button onclick="document.getElementById('edi-plano-upload').click(); closeAllDropdowns();">Desde Archivo</button>
+              <button onclick="abrirSelectorPlanosEdificio(); closeAllDropdowns();">Seleccionar Plano</button>
+            </div>
+          </div>
             <!-- Iconos de Navegación -->
             <button type="button" class="action-btn" onclick="volverDeEdificioDetalle()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Volver">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
@@ -2292,6 +2327,9 @@
               <h3 id="viewer-title" style="margin: 0;">Visor</h3>
             </div>
             <div class="modal-actions">
+              <button type="button" class="action-btn" onclick="openCreateDocumentModal()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Crear">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
               <button class="btn-fullscreen" style="background: #e67e22" onclick="openInNewTab()" title="Abrir en nueva pestaña">
                 <svg viewbox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"></path>
@@ -2343,6 +2381,57 @@
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2v7H8z"/><path d="M12 9h2v11h-2z"/><path d="M16 15h2v5h-2z"/></svg> Excel
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL CREAR DOCUMENTO -->
+      <div id="modal-create-document" class="modal-overlay hidden" style="z-index: 5500">
+        <div class="modal-content" style="width: 80vw; max-width: 800px; height: 80vh; max-height: 800px; display: flex; flex-direction: column; border-radius: 8px;">
+          <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <h3 style="display: flex; align-items: center; margin: 0;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Crear Documento
+            </h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <button class="action-btn" onclick="saveCreatedDocument()" style="background-color: #add8e6; color: #003366; font-weight: bold; display: flex; align-items: center; gap: 6px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Guardar
+              </button>
+              <button type="button" class="action-btn" onclick="closeCreateDocumentModal()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none; flex-shrink: 0;" title="Volver">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style="padding: 20px; display: flex; flex-direction: column; flex: 1; gap: 15px;">
+            <div>
+              <label for="create-doc-title" style="display: block; margin-bottom: 5px; font-weight: bold;">Título:</label>
+              <input type="text" id="create-doc-title" class="search-input" style="width: 100%;" placeholder="Escribe el título del documento..."/>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <label for="create-doc-content" style="display: block; margin-bottom: 5px; font-weight: bold;">Contenido:</label>
+              <textarea id="create-doc-content" style="width: 100%; flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: none; font-family: inherit;" placeholder="Escribe el contenido aquí..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL SELECCIONAR SECCION PARA GUARDAR -->
+      <div id="modal-select-section-save" class="modal-overlay hidden" style="z-index: 5600">
+        <div class="modal-content small">
+          <div class="modal-header">
+            <h3 style="margin: 0;">Guardar Documento</h3>
+            <button onclick="document.getElementById('modal-select-section-save').classList.add('hidden')"><span style="color: white; font-size: 1.2rem;">✕</span></button>
+          </div>
+          <div style="padding: 20px;">
+            <p style="margin-bottom: 15px;">Selecciona la sección donde deseas guardar el documento:</p>
+            <select id="save-doc-section-select" class="search-input" style="width: 100%; margin-bottom: 20px;">
+              <!-- Opciones generadas dinámicamente -->
+            </select>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button class="action-btn danger" onclick="document.getElementById('modal-select-section-save').classList.add('hidden')">Cancelar</button>
+              <button class="action-btn" onclick="confirmSaveCreatedDocument()">Guardar</button>
             </div>
           </div>
         </div>
@@ -2406,6 +2495,38 @@
         <input type="file" id="backup-file-upload" class="hidden-input" accept=".json" onchange="restoreBackup(event)"/>
       </div>
     </div>
+
+      <div id="modal-equipo-foto" class="modal-overlay hidden" style="z-index: 9999">
+        <div class="modal-content small">
+          <div class="modal-header">
+            <h3 style="margin: 0;">Foto del Equipo</h3>
+            <button type="button" class="action-btn" onclick="closeCatalogFotoModal()" style="background: none; border: none; padding: 5px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; text-shadow: none;" title="Cerrar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+          <div class="modal-body" style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="text-align: center;">
+              <img id="catalog-foto-preview" src="" alt="Vista previa" style="max-width: 100%; max-height: 200px; border: 1px solid #ccc; display: none; margin: 0 auto;">
+              <p id="catalog-foto-empty" style="color: #7f8c8d; font-style: italic;">Sin imagen</p>
+            </div>
+            <button type="button" class="action-btn" onclick="document.getElementById('catalog-foto-upload').click()" style="background: #3498db; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">Subir Imagen</button>
+            <input type="file" id="catalog-foto-upload" class="hidden-input" accept="image/*" onchange="handleCatalogFotoUpload(event)">
+            
+            <div style="display: flex; gap: 10px;">
+              <div style="flex: 1;">
+                <label for="catalog-foto-width">Ancho (ej. 100%, 500px):</label>
+                <input type="text" id="catalog-foto-width" value="100%" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+              </div>
+              <div style="flex: 1;">
+                <label for="catalog-foto-height">Alto (ej. 100%, 200px):</label>
+                <input type="text" id="catalog-foto-height" value="100%" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+              </div>
+            </div>
+            
+            <button type="button" class="action-btn" onclick="saveCatalogFoto()" style="background: #2ecc71; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">Guardar Cambios</button>
+          </div>
+        </div>
+      </div>
 
       <div id="custom-modal" class="modal-overlay hidden" style="z-index: 9999">
         <div class="modal-content small">
@@ -2750,9 +2871,13 @@
         if (normalizedQuery.includes("edificio")) {
           setTimeout(() => {
             closeChatWidget();
-            openEdificios();
+            if (normalizedQuery.includes("crear") || normalizedQuery.includes("añadir") || normalizedQuery.includes("nuevo")) {
+                addEdificio();
+            } else {
+                openEdificios();
+            }
           }, 1000);
-          return "Abriendo Edificios...";
+          return normalizedQuery.includes("crear") ? "Iniciando la creación de un nuevo edificio..." : "Abriendo Edificios...";
         }
 
         if (normalizedQuery.includes("equipo")) {
@@ -2847,7 +2972,7 @@
         if (normalizedQuery.includes("crear") && (normalizedQuery.includes("documento") || normalizedQuery.includes("manual") || normalizedQuery.includes("plantilla") || normalizedQuery.includes("procedimiento"))) {
           setTimeout(() => {
             closeChatWidget();
-            abrirEditor();
+            openCreateDocumentModal();
           }, 1000);
           return "Abriendo el editor para crear un nuevo documento...";
         }
@@ -3059,6 +3184,7 @@
           else if (key === "wikiTegralEquipos") url = "/api/equipos";
           else if (key === "wikiTegralSecurity") url = "/api/security";
           else if (key === "wikiTegralRacks") url = "/api/racks";
+          else if (key === "wikiTegralRackCatalog") url = "/api/rack-catalog";
           
           const response = await fetch(url);
           if (!response.ok) throw new Error("Network response was not ok");
@@ -3092,6 +3218,7 @@
           else if (key === "wikiTegralEquipos") url = "/api/equipos/sync";
           else if (key === "wikiTegralSecurity") url = "/api/security";
           else if (key === "wikiTegralRacks") url = "/api/racks/sync";
+          else if (key === "wikiTegralRackCatalog") url = "/api/rack-catalog/sync";
 
           const response = await fetch(url, {
             method: "POST",
@@ -4434,7 +4561,7 @@
         
         if (sub === 'Planos y Esquemas') {
             subirBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Importar';
-            if (crearBtn) crearBtn.style.display = 'none';
+            if (crearBtn) crearBtn.style.display = 'flex';
         } else {
             subirBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Subir Archivo';
             if (crearBtn) crearBtn.style.display = 'flex';
@@ -4614,50 +4741,6 @@
       }
 
       // --- EDITOR ---
-      function abrirEditor() {
-        editingKey = null;
-        editingIndex = null;
-        originalDocType = null;
-        document.getElementById("doc-name").value = "";
-        document.getElementById("doc-content").value = "";
-        showView("view-editor");
-      }
-      function guardarDocumento() {
-        const name = document.getElementById("doc-name").value;
-        const content = document.getElementById("doc-content").value;
-        const key = editingKey ? editingKey : `${currentMain}-${currentSub}`;
-
-        const newDataUrl =
-          originalDocType === "TXT" || name.toLowerCase().endsWith(".txt")
-            ? "data:text/plain;base64," +
-              btoa(unescape(encodeURIComponent(content)))
-            : "data:text/html;base64," +
-              btoa(unescape(encodeURIComponent(content)));
-
-        const docObj = {
-          name,
-          type: originalDocType || "MANUAL",
-          date: new Date().toLocaleString(),
-          dataUrl: newDataUrl,
-        };
-
-        if (editingKey && editingIndex !== null) {
-          dbDocs[editingKey][editingIndex] = docObj;
-        } else {
-          if (!dbDocs[key]) dbDocs[key] = [];
-          dbDocs[key].push(docObj);
-        }
-
-        saveDocs();
-        renderDocs();
-        showView("view-docs");
-        editingKey = null;
-        editingIndex = null;
-        originalDocType = null;
-      }
-      function cancelarEditor() {
-        showView("view-docs");
-      }
 
       // --- VISOR ---
       async function viewDocument(k, i) {
@@ -5330,8 +5413,8 @@
                 <td data-label="Edificio">${e.nombre}</td>
                 <td data-label="Horario">${e.horario}</td>
                 <td data-label="Contacto">${e.contacto}${e.telefono ? " - " + e.telefono : ""}</td>
-                <td data-label="Acción">
-                    <div style="display: inline-flex; gap: 5px; align-items: center; flex-wrap: wrap;">
+                <td data-label="Acción" style="text-align: right;">
+                    <div style="display: inline-flex; justify-content: flex-end; gap: 5px; align-items: center; flex-wrap: wrap; width: 100%;">
                         <button onclick="verEdificio(${i})" class="action-btn" style="padding: 10px 15px; display: inline-flex; align-items: center; justify-content: center;" title="Ver"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
                         <button onclick="previousViewBeforeWifis = 'view-edificios'; verEdificio(${i}); abrirWifisEdificio();" class="action-btn" style="padding: 10px 15px; background-color: #8e44ad; display: inline-flex; align-items: center; justify-content: center;" title="Wifis"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></button>
                         <button onclick="exportarEdificioIndividual(${i})" class="action-btn" style="padding: 10px 15px; font-size: 1.3rem; background-color: #2b579a;" title="Exportar Solo Este Edificio">📤</button>
@@ -5597,7 +5680,7 @@
         tbody.innerHTML = "";
         const e = dbEdificios[currentVerEdificioIndex];
         if (!e.wifis || e.wifis.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay registros de Wifi.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay registros de Wifi.</td></tr>';
           return;
         }
 
@@ -5609,9 +5692,6 @@
             <td data-label="C.I.">${wifi.ci || ""}</td>
             <td data-label="S/N">${wifi.sn || ""}</td>
             <td data-label="Comentarios">${wifi.comentarios || ""}</td>
-            <td data-label="Archivo">
-              ${wifi.archivo ? `<button class="action-btn secondary" onclick="descargarArchivoWifi(${index})" style="padding: 5px 10px; display: inline-flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Descargar</button>` : "Sin archivo"}
-            </td>
             <td data-label="Plano">
               ${wifi.planoWifi ? `<button class="action-btn secondary" onclick="verPlanoWifi(${index})" style="padding: 5px 10px; display: inline-flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg> Ver Plano</button>` : "Sin plano"}
             </td>
@@ -5921,10 +6001,11 @@
         });
       }
 
-      function limpiarSimbolosWifi() {
-        tempWifiData.puntosPlano = [];
-        tempWifiData.planoX = null;
-        tempWifiData.planoY = null;
+      function limpiarMapaWifi() {
+        tempWifiData.plano = null;
+        document.getElementById("wifi-plano-img").src = "";
+        document.getElementById("wifi-plano-wrapper").style.display = "none";
+        document.getElementById("wifi-plano-placeholder").style.display = "block";
         dibujarSimbolosWifiActuales();
       }
 
@@ -5993,6 +6074,77 @@
 
       function cerrarSelectorPlanosWifi() {
         document.getElementById("modal-wifi-selector-planos").classList.add("hidden");
+      }
+
+      function abrirSelectorPlanosEdificio() {
+        const list = document.getElementById("wifi-planos-list");
+        list.innerHTML = "";
+        const planos = dbDocs["Documentos-Planos y Esquemas"] || [];
+        
+        if (planos.length === 0) {
+          list.innerHTML = "<p style='text-align:center; color:#666;'>No hay planos disponibles en la sección Documentos.</p>";
+        } else {
+          planos.forEach((plano, index) => {
+            const btn = document.createElement("button");
+            btn.className = "action-btn secondary";
+            btn.style.textAlign = "left";
+            btn.style.padding = "10px";
+            btn.innerText = plano.name;
+            btn.onclick = () => seleccionarPlanoEdificio(index);
+            list.appendChild(btn);
+          });
+        }
+        
+        document.getElementById("modal-wifi-selector-planos").classList.remove("hidden");
+      }
+
+      async function seleccionarPlanoEdificio(index) {
+        const planos = dbDocs["Documentos-Planos y Esquemas"] || [];
+        const plano = planos[index];
+        if (plano && plano.dataUrl) {
+          const isPdf = (plano.type && plano.type.toLowerCase() === "pdf") || plano.dataUrl.startsWith("data:application/pdf");
+          if (isPdf) {
+            showCustomModal({ message: "Procesando PDF, por favor espera..." });
+            try {
+              let pdfSource = plano.dataUrl;
+              if (plano.dataUrl.startsWith("data:application/pdf;base64,")) {
+                const base64Data = plano.dataUrl.split(',')[1];
+                const binaryString = window.atob(base64Data);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                  bytes[i] = binaryString.charCodeAt(i);
+                }
+                pdfSource = bytes;
+              }
+              const pdf = await pdfjsLib.getDocument({ data: pdfSource }).promise;
+              const page = await pdf.getPage(1);
+              const viewport = page.getViewport({ scale: 2.0 });
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
+              await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+              const imgDataUrl = canvas.toDataURL('image/png');
+              
+              currentEdificioPlano = imgDataUrl;
+              document.getElementById("edi-plano-status").innerText = "Plano cargado (desde Documentos)";
+              document.getElementById("edi-plano-preview-img").src = currentEdificioPlano;
+              document.getElementById("edi-plano-preview-container").style.display = "flex";
+              closeCustomModal();
+            } catch (err) {
+              console.error("Error al procesar el PDF:", err);
+              closeCustomModal();
+              showCustomModal({ message: "Error al procesar el PDF del plano." });
+            }
+          } else {
+            currentEdificioPlano = plano.dataUrl;
+            document.getElementById("edi-plano-status").innerText = "Plano cargado (desde Documentos)";
+            document.getElementById("edi-plano-preview-img").src = currentEdificioPlano;
+            document.getElementById("edi-plano-preview-container").style.display = "flex";
+          }
+          cerrarSelectorPlanosWifi();
+        }
       }
 
       async function seleccionarPlanoWifi(index) {
@@ -6079,6 +6231,24 @@
           btnFotos.style.display = "inline-block";
         } else {
           btnFotos.style.display = "none";
+        }
+
+        // Mostrar miniaturas de fotos encima del plano
+        const fotosThumbnails = document.getElementById("ver-wifi-fotos-thumbnails");
+        fotosThumbnails.innerHTML = "";
+        if (wifi.fotos && wifi.fotos.length > 0) {
+          wifi.fotos.forEach((foto, idx) => {
+            const img = document.createElement("img");
+            img.src = foto.dataUrl;
+            img.style.width = "60px";
+            img.style.height = "60px";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "4px";
+            img.style.cursor = "pointer";
+            img.style.border = "2px solid #ddd";
+            img.onclick = () => abrirGaleriaWifi(eIndex, wIndex);
+            fotosThumbnails.appendChild(img);
+          });
         }
 
         const planoContainer = document.getElementById("ver-wifi-plano-container");
@@ -6366,16 +6536,6 @@
         });
       }
 
-      function descargarArchivoWifi(index) {
-        const wifi = dbEdificios[currentVerEdificioIndex].wifis[index];
-        if (wifi.archivo) {
-          const a = document.createElement("a");
-          a.href = wifi.archivo.dataUrl;
-          a.download = wifi.archivo.name;
-          a.click();
-        }
-      }
-
       function verPlanoWifi(index) {
         const e = dbEdificios[currentVerEdificioIndex];
         const wifi = e.wifis[index];
@@ -6396,7 +6556,7 @@
         }
       }
 
-      function exportarWifisPDF() {
+      async function exportarWifisPDF() {
         const e = dbEdificios[currentVerEdificioIndex];
         if (!e.wifis || e.wifis.length === 0) {
           showCustomModal({ message: "No hay registros de Wifi para exportar." });
@@ -6433,7 +6593,79 @@
           headStyles: { fillColor: [44, 62, 80] }
         });
 
+        // Exportar planos y fotos
+        for (const wifi of e.wifis) {
+          if (wifi.planoWifi || (wifi.fotos && wifi.fotos.length > 0)) {
+            doc.addPage();
+            doc.setFontSize(14);
+            doc.text(`Detalles: ${wifi.nombre}`, 14, 20);
+            
+            let currentY = 30;
+            
+            if (wifi.planoWifi) {
+              doc.setFontSize(12);
+              doc.text("Plano:", 14, currentY);
+              currentY += 10;
+              try {
+                doc.addImage(wifi.planoWifi, 'JPEG', 14, currentY, 180, 100);
+                currentY += 110;
+              } catch (e) {
+                console.error("Error al añadir plano al PDF", e);
+              }
+            }
+            
+            if (wifi.fotos && wifi.fotos.length > 0) {
+              doc.setFontSize(12);
+              doc.text("Fotos:", 14, currentY);
+              currentY += 10;
+              
+              for (const foto of wifi.fotos) {
+                if (currentY > 250) {
+                  doc.addPage();
+                  currentY = 20;
+                }
+                try {
+                  doc.addImage(foto.dataUrl, 'JPEG', 14, currentY, 80, 60);
+                  currentY += 70;
+                } catch (e) {
+                  console.error("Error al añadir foto al PDF", e);
+                }
+              }
+            }
+          }
+        }
+
         doc.save(`Wifis_${e.nombre.replace(/\s+/g, '_')}.pdf`);
+      }
+
+      function handleEdificioPlanoImportClick() {
+        showCustomModal({
+          title: "Importar Plano",
+          message: "¿Cómo desea importar el plano?",
+          buttons: [
+            {
+              text: "Desde Archivo",
+              class: "action-btn",
+              onClick: () => {
+                document.getElementById('edi-plano-upload').click();
+                cerrarCustomModal();
+              }
+            },
+            {
+              text: "Seleccionar de Documentos",
+              class: "action-btn",
+              onClick: () => {
+                abrirSelectorPlanosEdificio();
+                cerrarCustomModal();
+              }
+            },
+            {
+              text: "Cancelar",
+              class: "action-btn danger",
+              onClick: () => cerrarCustomModal()
+            }
+          ]
+        });
       }
 
       function addEdificioFoto(event) {
@@ -7026,6 +7258,86 @@
         );
       }
 
+      function openCreateDocumentModal() {
+        document.getElementById("create-doc-title").value = "";
+        document.getElementById("create-doc-content").value = "";
+        document.getElementById("modal-create-document").classList.remove("hidden");
+      }
+
+      function closeCreateDocumentModal() {
+        document.getElementById("modal-create-document").classList.add("hidden");
+      }
+
+      function saveCreatedDocument() {
+        const title = document.getElementById("create-doc-title").value.trim();
+        const content = document.getElementById("create-doc-content").value.trim();
+
+        if (!title || !content) {
+          showCustomModal({ message: "Por favor, rellena el título y el contenido." });
+          return;
+        }
+
+        // Populate the section select
+        const select = document.getElementById("save-doc-section-select");
+        select.innerHTML = "";
+        
+        const sections = [
+          { value: "Documentos-M.Integral", label: "Documentos > M.Integral" },
+          { value: "Documentos-Procedimientos", label: "Documentos > Procedimientos" },
+          { value: "Documentos-Inventarios", label: "Documentos > Inventarios" },
+          { value: "Documentos-Planos y Esquemas", label: "Documentos > Planos y Esquemas" },
+          { value: "Documentos-Planing", label: "Documentos > Planing" },
+          { value: "Documentos-Plantillas", label: "Documentos > Plantillas" },
+          { value: "Manuales-VOIP", label: "Manuales > VOIP" },
+          { value: "Manuales-Redes", label: "Manuales > Redes" },
+          { value: "Manuales-Videoconferencias", label: "Manuales > Videoconferencias" },
+          { value: "Trucos-Trucos", label: "Trucos" }
+        ];
+
+        sections.forEach(sec => {
+          const option = document.createElement("option");
+          option.value = sec.value;
+          option.textContent = sec.label;
+          select.appendChild(option);
+        });
+
+        document.getElementById("modal-select-section-save").classList.remove("hidden");
+      }
+
+      function confirmSaveCreatedDocument() {
+        const title = document.getElementById("create-doc-title").value.trim();
+        const content = document.getElementById("create-doc-content").value.trim();
+        const sectionKey = document.getElementById("save-doc-section-select").value;
+
+        if (!title || !content || !sectionKey) return;
+
+        const newDataUrl = "data:text/plain;base64," + btoa(unescape(encodeURIComponent(content)));
+
+        const docObj = {
+          name: title + ".txt",
+          type: "TXT",
+          size: content.length,
+          dataUrl: newDataUrl,
+          date: new Date().toISOString()
+        };
+
+        if (!dbDocs[sectionKey]) {
+          dbDocs[sectionKey] = [];
+        }
+        dbDocs[sectionKey].push(docObj);
+        saveDocs();
+
+        document.getElementById("modal-select-section-save").classList.add("hidden");
+        closeCreateDocumentModal();
+        showCustomModal({ message: "Documento guardado correctamente." });
+        
+        // If we are currently in that section, refresh the view
+        const parts = sectionKey.split("-");
+        if (currentMain === parts[0] && currentSub === parts[1]) {
+          renderDocs();
+        }
+      }
+
       function openGlobalImportModal() {
         if (currentRole !== 'admin') {
           showCustomModal({ message: "Acceso denegado. Solo administradores pueden importar datos." });
@@ -7058,8 +7370,61 @@
         pendingImportFiles = files;
         document.getElementById("import-file-name").innerText = files.map(f => f.name).join(", ");
 
-        document.getElementById("import-step-1").classList.add("hidden-el");
-        document.getElementById("import-step-2").classList.remove("hidden-el");
+        // Check for keywords in the first file name
+        const fileName = files[0].name.toLowerCase();
+        const mainCatSelect = document.getElementById("import-main-cat");
+        const subCatSelect = document.getElementById("import-sub-cat");
+        
+        let suggestedMain = null;
+        let suggestedSub = null;
+
+        const keywordMap = [
+          { keyword: "plano", main: "Documentos", sub: "Planos y Esquemas" },
+          { keyword: "esquema", main: "Documentos", sub: "Planos y Esquemas" },
+          { keyword: "voip", main: "Manuales", sub: "VOIP" },
+          { keyword: "redes", main: "Manuales", sub: "Redes" },
+          { keyword: "videoconferencia", main: "Manuales", sub: "Videoconferencias" },
+          { keyword: "manual", main: "Manuales", sub: null },
+          { keyword: "truco", main: "Trucos", sub: "Trucos" },
+          { keyword: "procedimiento", main: "Documentos", sub: "Procedimientos" },
+          { keyword: "inventario", main: "Documentos", sub: "Inventarios" },
+          { keyword: "planing", main: "Documentos", sub: "Planing" },
+          { keyword: "plantilla", main: "Documentos", sub: "Plantillas" },
+          { keyword: "integral", main: "Documentos", sub: "M.Integral" }
+        ];
+
+        for (const item of keywordMap) {
+          if (fileName.includes(item.keyword)) {
+            suggestedMain = item.main;
+            suggestedSub = item.sub;
+            break;
+          }
+        }
+
+        if (suggestedMain) {
+          const categoryName = suggestedSub ? `${suggestedMain} > ${suggestedSub}` : suggestedMain;
+          showCustomModal({
+            title: "Categoría sugerida",
+            message: `El archivo parece pertenecer a la sección "${categoryName}". ¿Deseas guardarlo allí directamente?`,
+            type: "confirm",
+            onConfirm: (confirmed) => {
+              if (confirmed) {
+                mainCatSelect.value = suggestedMain;
+                updateImportSubCats();
+                if (suggestedSub) {
+                  subCatSelect.value = suggestedSub;
+                }
+                executeGlobalImport();
+              } else {
+                document.getElementById("import-step-1").classList.add("hidden-el");
+                document.getElementById("import-step-2").classList.remove("hidden-el");
+              }
+            },
+          });
+        } else {
+          document.getElementById("import-step-1").classList.add("hidden-el");
+          document.getElementById("import-step-2").classList.remove("hidden-el");
+        }
       }
 
       async function executeGlobalImport() {
@@ -7320,6 +7685,9 @@
               <span style="font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">${item.u}U</span>
             </div>
             <div style="display: flex; gap: 5px;">
+              <button class="action-btn photo-btn" style="background: transparent; color: white; border: none; padding: 5px; cursor: pointer;" title="Foto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
               <button class="action-btn edit-btn" style="background: transparent; color: white; border: none; padding: 5px; cursor: pointer;" title="Editar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
               </button>
@@ -7355,6 +7723,11 @@
                 }
               });
             }
+          });
+
+          div.querySelector('.photo-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openCatalogFotoModal(index);
           });
 
           div.querySelector('.edit-btn').addEventListener('click', (e) => {
@@ -7492,6 +7865,9 @@
         sideData[index].ip = '';
         sideData[index].power = item.power || 0;
         sideData[index].btu = item.btu || 0;
+        sideData[index].image = item.image || null;
+        sideData[index].imageWidth = item.imageWidth || '100%';
+        sideData[index].imageHeight = item.imageHeight || '100%';
         
         saveRacks();
         renderRack();
@@ -7773,18 +8149,22 @@
             }
           }
 
+          // Determinar color de texto e iconos basado en el color de fondo
+          const isWhite = uData.color && (uData.color.toLowerCase() === '#ffffff' || uData.color.toLowerCase() === 'white');
+          const textColor = isWhite ? '#000000' : '#ffffff';
+
           uDiv.innerHTML = `
-            <div class="rack-u-number">${uNumbersHTML}</div>
+            <div class="rack-u-number" style="color: ${textColor}; border-right-color: ${isWhite ? '#bdc3c7' : 'rgba(255,255,255,0.3)'};">${uNumbersHTML}</div>
             <div class="rack-u-content" title="${[uData.serial ? 'S/N: ' + uData.serial : '', uData.ip ? 'IP: ' + uData.ip : ''].filter(Boolean).join(' | ')}">
-              <input type="text" class="rack-u-input" value="${uData.content || ''}" placeholder="Vacío" onchange="updateRackU(${i}, this.value)">
+              <input type="text" class="rack-u-input" value="${uData.content || ''}" placeholder="Vacío" readonly style="color: ${textColor};">
               <div class="rack-u-actions">
-                <button class="rack-u-action-btn" onclick="openInsertFromLibrary(${i})" title="Insertar desde Biblioteca"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg></button>
+                <button class="rack-u-action-btn" onclick="openInsertFromLibrary(${i})" title="Insertar desde Biblioteca" style="color: ${textColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5"/></svg></button>
                 <input type="color" class="rack-u-color-picker" value="${uData.color || '#ecf0f1'}" title="Color de fondo" onchange="updateRackUColor(${i}, this.value)" style="width: 20px; height: 20px; padding: 0; border: none; cursor: pointer; background: transparent;">
-                <button class="rack-u-action-btn" onclick="openRackUDetails(${i})" title="Detalles"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-                <button class="rack-u-action-btn" onclick="openRackConnections(${i})" title="Conexiones"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H3"/><path d="M8 16v1a2 2 0 0 0 2 2h11"/><path d="M16 16l-3 3"/><path d="M8 16l3 3"/><rect x="2" y="4" width="20" height="8" rx="2"/></svg></button>
-                ${nextUIndex >= 0 ? `<button class="rack-u-action-btn" onclick="mergeRackU(${i}, ${nextUIndex})" title="Unir con U inferior"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>` : ''}
-                <button class="rack-u-action-btn" onclick="emptyRackU(${i})" title="Vaciar U"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
-                ${uData.merged > 1 ? `<button class="rack-u-action-btn" onclick="unmergeRackU(${i})" title="Separar U"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21 5-5 5 5"/><path d="m7 3 5 5 5-5"/></svg></button>` : ''}
+                <button class="rack-u-action-btn" onclick="openRackUDetails(${i})" title="Detalles" style="color: ${textColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+                <button class="rack-u-action-btn" onclick="openRackConnections(${i})" title="Conexiones" style="color: ${textColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H3"/><path d="M8 16v1a2 2 0 0 0 2 2h11"/><path d="M16 16l-3 3"/><path d="M8 16l3 3"/><rect x="2" y="4" width="20" height="8" rx="2"/></svg></button>
+                ${nextUIndex >= 0 ? `<button class="rack-u-action-btn" onclick="mergeRackU(${i}, ${nextUIndex})" title="Unir con U inferior" style="color: ${textColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>` : ''}
+                <button class="rack-u-action-btn" onclick="emptyRackU(${i})" title="Vaciar U" style="color: ${textColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
+                ${uData.merged > 1 ? `<button class="rack-u-action-btn" onclick="unmergeRackU(${i})" title="Separar U" style="color: ${textColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21 5-5 5 5"/><path d="m7 3 5 5 5-5"/></svg></button>` : ''}
               </div>
             </div>
           `;
@@ -7814,6 +8194,363 @@
         if (currentRack === null) return;
         racks[currentRack][currentRackView][index].content = value;
         saveRacks();
+      }
+
+      function openRackPreview() {
+        if (currentRack === null) return;
+        const rack = racks[currentRack];
+        
+        const previewContainer = document.createElement('div');
+        previewContainer.id = 'rack-preview-container';
+        previewContainer.style.position = 'fixed';
+        previewContainer.style.top = '0';
+        previewContainer.style.left = '0';
+        previewContainer.style.width = '100%';
+        previewContainer.style.height = '100%';
+        previewContainer.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        previewContainer.style.display = 'flex';
+        previewContainer.style.justifyContent = 'center';
+        previewContainer.style.alignItems = 'center';
+        previewContainer.style.zIndex = '9999';
+
+        const rackPreview = document.createElement('div');
+        rackPreview.className = 'rack-preview-modal-content';
+        rackPreview.style.backgroundColor = '#fff';
+        rackPreview.style.padding = '20px';
+        rackPreview.style.borderRadius = '8px';
+        rackPreview.style.maxHeight = '95vh';
+        rackPreview.style.width = '95%';
+        rackPreview.style.maxWidth = '800px';
+        rackPreview.style.overflowY = 'auto';
+        rackPreview.style.display = 'flex';
+        rackPreview.style.flexDirection = 'column';
+        
+        const header = document.createElement('div');
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'center';
+        header.style.marginBottom = '15px';
+        header.style.borderBottom = '1px solid #eee';
+        header.style.paddingBottom = '10px';
+        
+        const title = document.createElement('h3');
+        title.style.margin = '0';
+        title.innerText = rack.name;
+        
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '10px';
+        actions.style.alignItems = 'center';
+        
+        const exportBtn = document.createElement('button');
+        exportBtn.innerText = 'Exportar';
+        exportBtn.style.background = '#27ae60';
+        exportBtn.style.color = 'white';
+        exportBtn.style.border = 'none';
+        exportBtn.style.padding = '8px 15px';
+        exportBtn.style.borderRadius = '5px';
+        exportBtn.style.cursor = 'pointer';
+        exportBtn.onclick = (e) => {
+            e.stopPropagation();
+            exportRackToPDF();
+        };
+
+        const simuladorBtn = document.createElement('button');
+        simuladorBtn.innerText = 'Simulador';
+        simuladorBtn.style.background = '#8e44ad';
+        simuladorBtn.style.color = 'white';
+        simuladorBtn.style.border = 'none';
+        simuladorBtn.style.padding = '8px 15px';
+        simuladorBtn.style.borderRadius = '5px';
+        simuladorBtn.style.cursor = 'pointer';
+        simuladorBtn.onclick = (e) => {
+            e.stopPropagation();
+            document.body.removeChild(previewContainer);
+            openRackSimulator();
+        };
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        `;
+        closeBtn.style.background = 'none';
+        closeBtn.style.border = 'none';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.display = 'flex';
+        closeBtn.style.alignItems = 'center';
+        closeBtn.style.justifyContent = 'center';
+        closeBtn.onclick = () => document.body.removeChild(previewContainer);
+        
+        actions.appendChild(exportBtn);
+        actions.appendChild(simuladorBtn);
+        actions.appendChild(closeBtn);
+        
+        header.appendChild(title);
+        header.appendChild(actions);
+        rackPreview.appendChild(header);
+        
+        const contentArea = document.createElement('div');
+        contentArea.id = 'rack-preview-content';
+        contentArea.style.padding = '10px';
+        contentArea.style.backgroundColor = '#fff';
+        
+        const frame = document.createElement('div');
+        frame.style.display = 'flex';
+        frame.style.flexDirection = 'column';
+        frame.style.gap = '2px';
+        frame.style.width = '100%';
+        frame.style.maxWidth = '500px';
+        frame.style.margin = '0 auto';
+        frame.style.border = '4px solid #34495e';
+        frame.style.padding = '5px';
+        frame.style.backgroundColor = '#2c3e50';
+
+        const sideData = rack[currentRackView];
+        for (let i = rack.uCount - 1; i >= 0; i--) {
+          const uData = sideData[i];
+          if (uData.merged === 0) continue;
+
+          const uDiv = document.createElement('div');
+          uDiv.style.height = `${uData.merged * 30}px`;
+          uDiv.style.backgroundColor = uData.color || '#ecf0f1';
+          uDiv.style.border = '1px solid #bdc3c7';
+          uDiv.style.display = 'flex';
+          uDiv.style.alignItems = 'center';
+          uDiv.style.padding = '2px 5px';
+          uDiv.style.fontSize = '11px';
+          uDiv.style.fontWeight = 'bold';
+          uDiv.style.overflow = 'hidden';
+          
+          const uNumbers = [];
+          for (let j = 0; j < uData.merged; j++) {
+            uNumbers.push(`U${i + 1 - j}`);
+          }
+          
+          uDiv.innerHTML = `
+            <div style="width: 35px; border-right: 1px solid #bdc3c7; margin-right: 8px; font-size: 9px; color: #666; display: flex; flex-direction: column; justify-content: center; height: 100%;">
+              ${uNumbers.join('<br>')}
+            </div>
+            <div style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${uData.content || 'Vacío'}</div>
+          `;
+          
+          frame.appendChild(uDiv);
+        }
+        
+        contentArea.appendChild(frame);
+        rackPreview.appendChild(contentArea);
+        previewContainer.appendChild(rackPreview);
+        document.body.appendChild(previewContainer);
+      }
+
+      function exportRackToPDF() {
+        const element = document.getElementById('rack-preview-content');
+        if (!element) return;
+        
+        const rack = racks[currentRack];
+        const filename = `Rack_${rack.name.replace(/\s+/g, '_')}.pdf`;
+
+        // Show loading or something?
+        
+        html2pdf().from(element).set({
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }
+        }).toCanvas().get('canvas').then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 0.98);
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('p', 'mm', 'a4');
+          
+          const pageWidth = doc.internal.pageSize.getWidth();
+          const pageHeight = doc.internal.pageSize.getHeight();
+          const margin = 10;
+          const maxWidth = pageWidth - (margin * 2);
+          const maxHeight = pageHeight - (margin * 2);
+
+          let finalWidth = maxWidth;
+          let finalHeight = (canvas.height * finalWidth) / canvas.width;
+
+          if (finalHeight > maxHeight) {
+            finalHeight = maxHeight;
+            finalWidth = (canvas.width * finalHeight) / canvas.height;
+          }
+
+          const x = (pageWidth - finalWidth) / 2;
+          const y = margin;
+
+          doc.addImage(imgData, 'JPEG', x, y, finalWidth, finalHeight);
+          doc.save(filename);
+        });
+      }
+
+      function openRackSimulator() {
+        if (currentRack === null) return;
+        const rack = racks[currentRack];
+        
+        const simulatorContainer = document.createElement('div');
+        simulatorContainer.id = 'rack-simulator-container';
+        simulatorContainer.style.position = 'fixed';
+        simulatorContainer.style.top = '0';
+        simulatorContainer.style.left = '0';
+        simulatorContainer.style.width = '100%';
+        simulatorContainer.style.height = '100%';
+        simulatorContainer.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        simulatorContainer.style.display = 'flex';
+        simulatorContainer.style.justifyContent = 'center';
+        simulatorContainer.style.alignItems = 'center';
+        simulatorContainer.style.zIndex = '9999';
+
+        const rackSimulator = document.createElement('div');
+        rackSimulator.className = 'rack-preview-modal-content';
+        rackSimulator.style.backgroundColor = '#fff';
+        rackSimulator.style.padding = '20px';
+        rackSimulator.style.borderRadius = '8px';
+        rackSimulator.style.maxHeight = '95vh';
+        rackSimulator.style.width = '95%';
+        rackSimulator.style.maxWidth = '800px';
+        rackSimulator.style.overflowY = 'auto';
+        rackSimulator.style.display = 'flex';
+        rackSimulator.style.flexDirection = 'column';
+        
+        const header = document.createElement('div');
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'center';
+        header.style.marginBottom = '15px';
+        header.style.borderBottom = '1px solid #eee';
+        header.style.paddingBottom = '10px';
+        
+        const title = document.createElement('h3');
+        title.style.margin = '0';
+        title.innerText = rack.name + ' (Simulador)';
+        
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '10px';
+        actions.style.alignItems = 'center';
+        
+        const exportBtn = document.createElement('button');
+        exportBtn.innerText = 'Exportar';
+        exportBtn.style.background = '#27ae60';
+        exportBtn.style.color = 'white';
+        exportBtn.style.border = 'none';
+        exportBtn.style.padding = '8px 15px';
+        exportBtn.style.borderRadius = '5px';
+        exportBtn.style.cursor = 'pointer';
+        exportBtn.onclick = (e) => {
+            e.stopPropagation();
+            exportRackSimulatorToPDF();
+        };
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        `;
+        closeBtn.style.background = 'none';
+        closeBtn.style.border = 'none';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.display = 'flex';
+        closeBtn.style.alignItems = 'center';
+        closeBtn.style.justifyContent = 'center';
+        closeBtn.onclick = () => document.body.removeChild(simulatorContainer);
+        
+        actions.appendChild(exportBtn);
+        actions.appendChild(closeBtn);
+        
+        header.appendChild(title);
+        header.appendChild(actions);
+        rackSimulator.appendChild(header);
+        
+        const contentArea = document.createElement('div');
+        contentArea.id = 'rack-simulator-content';
+        contentArea.style.padding = '10px';
+        contentArea.style.backgroundColor = '#fff';
+        
+        const frame = document.createElement('div');
+        frame.style.display = 'flex';
+        frame.style.flexDirection = 'column';
+        frame.style.gap = '2px';
+        frame.style.width = '100%';
+        frame.style.maxWidth = '500px';
+        frame.style.margin = '0 auto';
+        frame.style.border = '4px solid #34495e';
+        frame.style.padding = '5px';
+        frame.style.backgroundColor = '#2c3e50';
+
+        const sideData = rack[currentRackView];
+        
+        for (let i = rack.uCount - 1; i >= 0; i--) {
+          const uData = sideData[i];
+          if (uData.merged === 0) continue;
+          
+          const uHeight = uData.merged * 30 + (uData.merged - 1) * 2;
+          
+          const uRow = document.createElement('div');
+          uRow.style.height = uHeight + 'px';
+          uRow.style.backgroundColor = '#ecf0f1';
+          uRow.style.display = 'flex';
+          uRow.style.alignItems = 'center';
+          uRow.style.justifyContent = 'center';
+          uRow.style.position = 'relative';
+          uRow.style.overflow = 'hidden';
+          
+          if (uData.content) {
+            if (uData.image) {
+              const img = document.createElement('img');
+              img.src = uData.image;
+              img.style.width = uData.imageWidth || '100%';
+              img.style.height = uData.imageHeight || '100%';
+              img.style.objectFit = 'contain';
+              uRow.appendChild(img);
+            } else {
+              uRow.style.backgroundColor = uData.color || '#ecf0f1';
+              uRow.style.color = '#fff';
+              uRow.style.fontWeight = 'bold';
+              uRow.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+              uRow.innerText = uData.content;
+            }
+          }
+          
+          frame.appendChild(uRow);
+        }
+        
+        contentArea.appendChild(frame);
+        rackSimulator.appendChild(contentArea);
+        simulatorContainer.appendChild(rackSimulator);
+        document.body.appendChild(simulatorContainer);
+      }
+
+      function exportRackSimulatorToPDF() {
+        const element = document.getElementById('rack-simulator-content');
+        if (!element) return;
+        
+        const rack = racks[currentRack];
+        const filename = `Rack_${rack.name.replace(/\s+/g, '_')}_simulador.pdf`;
+        
+        html2pdf().from(element).set({
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }
+        }).toCanvas().get('canvas').then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 0.98);
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('p', 'mm', 'a4');
+          
+          const pageWidth = doc.internal.pageSize.getWidth();
+          const pageHeight = doc.internal.pageSize.getHeight();
+          const margin = 10;
+          const maxWidth = pageWidth - (margin * 2);
+          const maxHeight = pageHeight - (margin * 2);
+
+          let finalWidth = maxWidth;
+          let finalHeight = (canvas.height * finalWidth) / canvas.width;
+
+          if (finalHeight > maxHeight) {
+            finalHeight = maxHeight;
+            finalWidth = (canvas.width * finalHeight) / canvas.height;
+          }
+
+          const x = (pageWidth - finalWidth) / 2;
+          const y = margin;
+
+          doc.addImage(imgData, 'JPEG', x, y, finalWidth, finalHeight);
+          doc.save(filename);
+        });
       }
 
       function updateRackUColor(index, color) {
@@ -8122,22 +8859,63 @@
         if (currentRack === null) return;
         const rack = racks[currentRack];
         const element = document.getElementById('rack-editor-container');
+        const filename = `Rack_${rack.name}_${currentRackView}.pdf`;
         
-        // Temporarily hide action buttons for cleaner PDF
-        const actionBtns = element.querySelectorAll('.rack-u-actions');
-        actionBtns.forEach(btn => btn.style.display = 'none');
-        
-        const opt = {
-          margin:       2,
-          filename:     `Rack_${rack.name}_${currentRackView}.pdf`,
-          image:        { type: 'jpeg', quality: 0.9 },
-          html2canvas:  { scale: 1.2, useCORS: true, letterRendering: true, windowWidth: element.scrollWidth },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
-        };
+        // Temporarily hide action buttons and other UI elements for cleaner PDF
+        const actionBtns = element.querySelectorAll('.rack-u-actions, .btn-fullscreen, button');
+        const originalDisplays = [];
+        actionBtns.forEach(btn => {
+          originalDisplays.push(btn.style.display);
+          btn.style.display = 'none';
+        });
 
-        html2pdf().set(opt).from(element).save().then(() => {
-          // Restore action buttons
-          actionBtns.forEach(btn => btn.style.display = 'flex');
+        // Ensure white background and some padding for the container
+        const originalBg = element.style.backgroundColor;
+        const originalPadding = element.style.padding;
+        element.style.backgroundColor = '#ffffff';
+        element.style.padding = '20px';
+
+        html2pdf().from(element).set({
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }
+        }).toCanvas().get('canvas').then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 0.98);
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('p', 'mm', 'a4');
+          
+          const pageWidth = doc.internal.pageSize.getWidth();
+          const pageHeight = doc.internal.pageSize.getHeight();
+          const margin = 10;
+          const maxWidth = pageWidth - (margin * 2);
+          const maxHeight = pageHeight - (margin * 2);
+
+          let finalWidth = maxWidth;
+          let finalHeight = (canvas.height * finalWidth) / canvas.width;
+
+          if (finalHeight > maxHeight) {
+            finalHeight = maxHeight;
+            finalWidth = (canvas.width * finalHeight) / canvas.height;
+          }
+
+          const x = (pageWidth - finalWidth) / 2;
+          const y = margin;
+
+          doc.addImage(imgData, 'JPEG', x, y, finalWidth, finalHeight);
+          doc.save(filename);
+          
+          // Restore styles
+          actionBtns.forEach((btn, i) => {
+            btn.style.display = originalDisplays[i];
+          });
+          element.style.backgroundColor = originalBg;
+          element.style.padding = originalPadding;
+        }).catch(err => {
+          console.error(err);
+          // Restore styles on error too
+          actionBtns.forEach((btn, i) => {
+            btn.style.display = originalDisplays[i];
+          });
+          element.style.backgroundColor = originalBg;
+          element.style.padding = originalPadding;
         });
       }
 
@@ -8191,6 +8969,71 @@
         rackCatalog.splice(idx, 1);
         await saveRackCatalog();
         renderRackCatalog();
+      }
+
+      let currentCatalogFotoIndex = null;
+      let tempCatalogFotoData = null;
+
+      function openCatalogFotoModal(idx) {
+        currentCatalogFotoIndex = idx;
+        const item = rackCatalog[idx];
+        tempCatalogFotoData = item.image || null;
+        
+        document.getElementById('catalog-foto-width').value = item.imageWidth || '100%';
+        document.getElementById('catalog-foto-height').value = item.imageHeight || '100%';
+        
+        const preview = document.getElementById('catalog-foto-preview');
+        const emptyText = document.getElementById('catalog-foto-empty');
+        
+        if (tempCatalogFotoData) {
+          preview.src = tempCatalogFotoData;
+          preview.style.display = 'block';
+          emptyText.style.display = 'none';
+        } else {
+          preview.src = '';
+          preview.style.display = 'none';
+          emptyText.style.display = 'block';
+        }
+        
+        document.getElementById('modal-equipo-foto').classList.remove('hidden');
+      }
+
+      function closeCatalogFotoModal() {
+        document.getElementById('modal-equipo-foto').classList.add('hidden');
+        currentCatalogFotoIndex = null;
+        tempCatalogFotoData = null;
+        document.getElementById('catalog-foto-upload').value = '';
+      }
+
+      function handleCatalogFotoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          tempCatalogFotoData = e.target.result;
+          const preview = document.getElementById('catalog-foto-preview');
+          const emptyText = document.getElementById('catalog-foto-empty');
+          preview.src = tempCatalogFotoData;
+          preview.style.display = 'block';
+          emptyText.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      async function saveCatalogFoto() {
+        if (currentCatalogFotoIndex === null) return;
+        
+        const width = document.getElementById('catalog-foto-width').value;
+        const height = document.getElementById('catalog-foto-height').value;
+        
+        rackCatalog[currentCatalogFotoIndex].image = tempCatalogFotoData;
+        rackCatalog[currentCatalogFotoIndex].imageWidth = width;
+        rackCatalog[currentCatalogFotoIndex].imageHeight = height;
+        
+        await saveRackCatalog();
+        closeCatalogFotoModal();
+        showCustomModal({ message: "Foto guardada correctamente." });
       }
 
       // U Details Management
